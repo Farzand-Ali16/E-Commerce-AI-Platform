@@ -1,121 +1,118 @@
-# E-Commerce AI Analytics & Customer Intelligence Platform
+# E-Commerce AI Platform
 
-## Environment (important)
+Customer analytics dashboard and customer segment prediction app. The frontend uses React and Vite; the backend uses FastAPI and saved production machine-learning artifacts.
 
-The saved production artifacts need **pandas 3.x** (the preprocessor stores a pandas 3 string dtype). Python 3.11+ is required.
-Exact versions are pinned in `requirements.txt` (pandas 3.0.2, numpy 2.4.4, scikit-learn 1.8.0, joblib 1.5.3).
+**GitHub repository:** [Farzand-Ali16/E-Commerce-AI-Platform](https://github.com/Farzand-Ali16/E-Commerce-AI-Platform)
 
-```bash
-python -m pip install -r requirements.txt     # use the SAME python that runs the app and pytest
-python scripts/diagnose_environment.py        # read-only check: versions, file hashes, loads both artifacts
-```
+> The repository contains the project source code. A public live website has not been deployed yet. The app can be run locally by following the steps below.
 
-## Stage 6: segment prediction API
+## What the project does
 
-```bash
-pip install -r requirements.txt
-python -m uvicorn backend.app:app --reload      # run from the project root
-# docs: http://127.0.0.1:8000/docs
-python -m pytest tests -v                        # tests
-python tests/test_segmentation_service.py        # demo table + tests
-```
+- Shows sales, orders, customer counts, average order value, category results, and customer segments.
+- Filters dashboard results by date, product category, and city.
+- Predicts a segment for one customer from five purchase-history details.
+- Uses the saved Core 5 K-means model and preprocessor in `models/`. Starting the app or requesting a prediction does not train or modify the model.
 
-## Stage 7: dashboard API (`/api/dashboard`)
+## Requirements
 
-Read-only GET endpoints that calculate everything from the real CSV files (loaded once at start-up, never retrained):
+- Python 3.11 or newer
+- Node.js and npm
 
-| Endpoint | Purpose |
-|---|---|
-| `GET /api/dashboard/summary` | KPIs: revenue, orders, customers, AOV, rating, quantity |
-| `GET /api/dashboard/sales-trend?granularity=day\|week\|month` | Revenue and orders over time |
-| `GET /api/dashboard/category-performance` | Revenue, orders, AOV by category |
-| `GET /api/dashboard/city-performance` | Revenue and orders by city |
-| `GET /api/dashboard/payment-analysis` | Revenue and orders by payment method |
-| `GET /api/dashboard/device-analysis` | Revenue, orders, engagement by device |
-| `GET /api/dashboard/customer-analysis` | Orders per customer, spending, ratings, recency, new vs returning |
-| `GET /api/dashboard/segments` | The 4 production segments side by side |
-| `GET /api/dashboard/segment/{cluster_id}` | One segment in detail (404 for unknown id) |
-| `GET /api/dashboard/filters` | Values for the filter dropdowns |
-| `GET /api/dashboard/health` | Data loaded? |
+Install Python packages using the same Python interpreter that will run the backend and tests. The saved production artifacts require the versions pinned in `requirements.txt`, including pandas 3.x, NumPy 2.4.4, scikit-learn 1.8.0, and joblib 1.5.3.
 
-Optional filters on every endpoint: `start_date`, `end_date` (YYYY-MM-DD, inclusive), `category`, `city`,
-`payment_method`, `device_type` (case-insensitive) and `segment` (0-3; not on the two segment endpoints).
-Customer numbers are calculated from the selected orders. Invalid values return 422 with the allowed values.
+## Run locally on Windows
 
-## Stage 8: React + Vite analytics dashboard
+Open PowerShell in the project folder.
 
-Stage 8 adds a browser dashboard that reads the Stage 7 API and a customer segment prediction screen. It uses the
-saved production model through the API; the frontend never trains or changes model artifacts.
+### 1. Start the backend
 
-### Backend setup and run
-
-Use Python 3.11 or newer. From the project root, create an environment, install the pinned backend requirements,
-and start FastAPI:
-
-```bash
+```powershell
 python -m venv .venv
-# Windows PowerShell:
-.venv\Scripts\Activate.ps1
-# macOS / Linux: source .venv/bin/activate
+.\.venv\Scripts\Activate.ps1
 python -m pip install -r requirements.txt
 python -m uvicorn backend.app:app --reload
 ```
 
-The API is available at `http://127.0.0.1:8000`; interactive API documentation is at
-`http://127.0.0.1:8000/docs`. On startup, it loads the existing data and production artifacts from `data/` and
-`models/`.
+Keep this PowerShell window open. The backend API runs at `http://127.0.0.1:8000`; its interactive documentation is at `http://127.0.0.1:8000/docs`.
 
-### Frontend setup and run
+### 2. Start the frontend
 
-Open a second terminal at `frontend/`. Vite 6 requires Node.js 18+, 20+, or 22+ and npm.
+Open a second PowerShell window:
 
-```bash
+```powershell
+cd frontend
 npm install
 npm run dev
 ```
 
-Open the Vite URL shown in the terminal (normally `http://127.0.0.1:5173`). To create and serve a production
-build, run `npm run build` and then `npm run preview` from `frontend/`.
+Open `http://127.0.0.1:5173` in your browser. Keep this window open too. The frontend calls the backend at `http://127.0.0.1:8000` by default.
 
-### API base URL configuration
+## API base URL
 
-The frontend reads `VITE_API_BASE_URL`. For local development, copy `frontend/.env.example` to `frontend/.env`
-and use `http://127.0.0.1:8000`. Set it to the deployed backend origin when using another server. The API allows
-the default Vite development origins `http://localhost:5173` and `http://127.0.0.1:5173`; add your deployed
-frontend origin to the FastAPI CORS configuration in `backend/app.py` when hosting the two separately.
+The frontend reads `VITE_API_BASE_URL`. To set it locally, create a file named `frontend/.env` with:
 
-The React client sends JSON `fetch` requests directly to this base URL. Dashboard views call the read-only
-`/api/dashboard/*` endpoints; segment predictions use `POST /api/segmentation/predict`. FastAPI serves the API
-on port `8000` and allows both default Vite development origins in its CORS configuration.
-
-### Stage 8 features
-
-- Sales overview with revenue, order, customer, average order value, rating, and quantity KPIs.
-- Monthly revenue trend, category performance, customer repeat-rate summary, and the four saved customer segments.
-- Date, category, and city filters applied to dashboard analytics.
-- Segment detail view with customer profile, purchase mix, and suggested actions.
-- Customer prediction form for the five production features, with assignment strength, nearest alternative, model
-  profile, and validation/extrapolation warnings.
-- Backend availability indicator and readable loading, empty, and error states.
-
-### Project structure
-
-```text
-backend/       FastAPI app, routes, schemas, and services
-data/          Source dataset and processed analytics / segment data
-frontend/      React + Vite dashboard
-models/        Saved production model, preprocessor, and segment metadata
-reports/       Existing analysis reports and figures
-scripts/       Environment diagnostics
-src/           Data, feature, preprocessing, and model pipeline source
-tests/         Backend API and segmentation tests
-requirements.txt
+```env
+VITE_API_BASE_URL=http://127.0.0.1:8000
 ```
 
-### Run backend tests
+Restart the Vite server after changing this value. When deploying the frontend and backend separately, set this variable to the public backend URL and allow the deployed frontend origin in the FastAPI CORS settings in `backend/app.py`.
 
-With the backend environment active, from the project root run:
+## Dashboard data
 
-```bash
+The source order data is `data/ecommerce_customer_behavior_dataset_v2.csv`. The dashboard also reads the processed customer features and saved segment assignments from `data/processed/`. Dashboard segment summaries use the saved production assignments; dashboard requests do not retrain K-means.
+
+Date filters include the selected start and end dates. Leaving filters blank shows all available data.
+
+## Customer segment prediction
+
+The prediction screen accepts these five customer details:
+
+1. Total orders
+2. Average order value
+3. Days since the last order
+4. Average days between orders
+5. Share of orders in the customer's most common category
+
+The backend validates the values, applies the saved preprocessor, and asks the saved K-means model for the closest segment. A single-order customer does not need an average gap between orders. The prediction screen does not retrain the model.
+
+## API endpoints
+
+| Endpoint | Purpose |
+|---|---|
+| `POST /api/segmentation/predict` | Predict one customer's segment |
+| `GET /api/segmentation/health` | Check model and preprocessor status |
+| `GET /api/dashboard/summary` | Dashboard headline metrics |
+| `GET /api/dashboard/sales-trend` | Revenue and orders over time |
+| `GET /api/dashboard/category-performance` | Results by product category |
+| `GET /api/dashboard/city-performance` | Results by city |
+| `GET /api/dashboard/payment-analysis` | Results by payment method |
+| `GET /api/dashboard/device-analysis` | Results by device type |
+| `GET /api/dashboard/customer-analysis` | Customer purchase analysis |
+| `GET /api/dashboard/segments` | Four saved customer segments |
+| `GET /api/dashboard/segment/{cluster_id}` | Details for one segment |
+| `GET /api/dashboard/filters` | Available dashboard filter values |
+| `GET /api/dashboard/health` | Check dashboard data status |
+
+Dashboard endpoints support optional date, category, city, payment method, device type, and segment filters where applicable. Invalid filters return a validation error.
+
+## Tests
+
+From the project root, with the Python environment active:
+
+```powershell
 python -m pytest tests -q
+```
+
+## Project structure
+
+```text
+backend/       FastAPI application, API routes, schemas, and services
+data/          Source dataset and processed customer/segment data
+frontend/      React + Vite user interface
+models/        Saved model, preprocessor, and segment metadata
+reports/       Analysis reports and figures
+scripts/       Environment diagnostics
+src/           Data, feature, preprocessing, and model pipeline code
+tests/         Backend API and segmentation tests
+requirements.txt
 ```
