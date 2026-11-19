@@ -1,0 +1,25 @@
+{
+  "selected_k": 4,
+  "features": [
+    "Total_Orders",
+    "Average_Order_Value",
+    "Average_Discount_Rate",
+    "Average_Customer_Rating",
+    "Average_Session_Duration",
+    "Average_Pages_Viewed",
+    "Average_Delivery_Time",
+    "Days_Since_Last_Order",
+    "Average_Days_Between_Orders",
+    "Preferred_Category_Share"
+  ],
+  "random_state": 42,
+  "n_init": 50,
+  "cluster_labels": {
+    "0": "Loyal & Active",
+    "1": "Lapsed Repeat Buyers",
+    "2": "Slow-Cycle Repeat Buyers",
+    "3": "One-Time Buyers"
+  },
+  "preprocessor": "models/cluster_preprocessor.joblib",
+  "note": "Cluster ids are numbered by mean Total_Orders (0 = most orders). Labels are proposed names and can be edited."
+}

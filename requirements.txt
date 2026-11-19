@@ -1,0 +1,24 @@
+# Python 3.11 or newer is required (scikit-learn 1.8 and pandas 3 need it).
+#
+# EXACT versions: the saved production artifacts (models/*_core5.joblib) were created and verified with these.
+# - pandas MUST be 3.x: the saved preprocessor stores pandas 3 string dtypes, which pandas 2.x cannot load
+#   (tested: pandas 2.2.2 / 2.2.3 -> TypeError, 2.3.x -> NotImplementedError, 3.0.0 to 3.0.6 -> OK).
+# - Install with the SAME interpreter that runs the app:  python -m pip install -r requirements.txt
+# - Check your environment:  python scripts/diagnose_environment.py
+pandas==3.0.2
+numpy==2.4.4
+scikit-learn==1.8.0
+joblib==1.5.3
+
+# data / plots (used by the src/ stage scripts)
+matplotlib>=3.8
+seaborn>=0.13
+
+# backend API
+fastapi>=0.110
+uvicorn[standard]>=0.29
+pydantic>=2.6
+
+# tests
+httpx>=0.27
+pytest>=8.0

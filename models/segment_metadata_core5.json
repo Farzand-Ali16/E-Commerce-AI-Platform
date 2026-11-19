@@ -1,0 +1,21 @@
+{
+  "selected_k": 4,
+  "features": [
+    "Total_Orders",
+    "Average_Order_Value",
+    "Days_Since_Last_Order",
+    "Average_Days_Between_Orders",
+    "Preferred_Category_Share"
+  ],
+  "random_state": 42,
+  "n_init": 50,
+  "cluster_labels": {
+    "0": "Loyal & Active",
+    "1": "Lapsed Repeat Buyers",
+    "2": "Slow-Cycle Repeat Buyers",
+    "3": "One-Time Buyers"
+  },
+  "preprocessor": "models/cluster_preprocessor_core5.joblib",
+  "status": "candidate (Stage 5.1). See reports/stage5_1_refinement_report.md for the production recommendation",
+  "note": "Cluster ids are numbered by mean Total_Orders (0 = most orders)."
+}

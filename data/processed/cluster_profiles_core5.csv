@@ -1,0 +1,5 @@
+Cluster,Customers,Customers_%,Total_Orders,Total_Spending,Average_Order_Value,Average_Discount,Average_Discount_Rate,Average_Customer_Rating,Average_Session_Duration,Average_Pages_Viewed,Average_Delivery_Time,Days_Since_Last_Order,Average_Days_Between_Orders,Unique_Categories_Bought,Preferred_Category_Share,Revenue_Share_%,Single_Order_%,Silence_vs_Usual_Gap,Preferred_Category,Preferred_Device,Preferred_Payment
+0,1635,32.7,5.819,7882.605,1391.385,77.222,0.053,3.89,14.506,9.014,6.509,50.008,70.623,4.262,0.36,59.176,0.0,0.585,Sports (15%),Mobile (69%),Credit Card (52%)
+1,1164,23.28,2.898,3502.826,1232.737,71.152,0.052,3.897,14.574,8.965,6.573,203.745,60.632,2.556,0.463,18.721,0.0,3.148,Food (14%),Mobile (62%),Credit Card (44%)
+2,1193,23.86,2.537,2947.657,1196.08,60.801,0.052,3.904,14.581,9.05,6.346,79.471,190.138,2.286,0.497,16.147,0.0,0.379,Books (15%),Mobile (59%),Credit Card (45%)
+3,1008,20.16,1.126,1286.854,1168.343,54.435,0.047,3.925,14.571,8.918,6.685,213.146,104.463,1.0,1.0,5.956,88.492,1.451,Beauty (14%),Mobile (55%),Credit Card (39%)
